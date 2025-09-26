@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Atrium Residencial Club</title>
+
+<!-- CSS do dashboard -->
+<link rel="stylesheet" href="css/dashboard.css">
+
+<!-- Font Awesome para ícones -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+</head>
+<body>
+
+<div class="sidebar">
+    <h2>Menu</h2>
+
+    <div class="menu-item has-submenu">
+        <a href="#" class="menu-link"><i class="fa-solid fa-users"></i> Cadastros</a>
+        <div class="submenu">
+            <a href="#" id="link-moradores"><i class="fa-solid fa-user"></i> Moradores</a>
+            <a href="#" id="link-veiculos"><i class="fa-solid fa-car"></i> Veículos</a>
+            <a href="#" id="link-funcionarios"><i class="fa-solid fa-briefcase"></i> Funcionários</a>
+        </div>
+    </div>
+
+    <div class="menu-item has-submenu">
+        <a href="#" class="menu-link"><i class="fa-solid fa-box"></i> Encomendas</a>
+        <div class="submenu">
+            <a href="#" id="link-registrar-entrega"><i class="fa-solid fa-truck"></i> Registrar Entrega</a>
+            <a href="#"><i class="fa-solid fa-bell"></i> Enviar Avisos</a>
+            <a href="#" id="link-enviar-mensagem"><i class="fa-solid fa-envelope"></i> Enviar Mensagem</a>
+
+        </div>
+    </div>
+
+    <div class="menu-item disabled"><a href="#"><i class="fa-solid fa-money-bill"></i> Financeiro</a></div>
+    <div class="menu-item disabled"><a href="#"><i class="fa-solid fa-tools"></i> Manutenção</a></div>
+
+    <div class="menu-item has-submenu">
+        <a href="#" class="menu-link"><i class="fa-solid fa-bell-exclamation"></i> Alertas e Avisos</a>
+        <div class="submenu">
+            <a href="#"><i class="fa-solid fa-plus"></i> Cadastrar Novo Alerta</a>
+        </div>
+    </div>
+
+    <div class="logout" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> Sair</div>
+</div>
+
+<div class="main">
+    <h1 id="mainTitle">Atrium Residencial Club</h1>
+    <div class="datetime" id="datetime"></div>
+
+    <!-- Área dinâmica -->
+    <div id="content-area">
+        <div class="cards">
+            <div class="card">Aviso 1</div>
+            <div class="card">Aviso 2</div>
+            <div class="card">Aviso 3</div>
+        </div>
+    </div>
+</div>
+
+<!-- Modais -->
+
+<!-- Modal Moradores -->
+<div id="moradorModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2 id="modalTitleMorador">Adicionar Morador</h2>
+        <form id="moradorForm">
+            <label>Nome</label>
+            <input type="text" id="morNome" placeholder="Nome" required>
+            <label>Apartamento</label>
+            <input type="text" id="morApto" placeholder="Apartamento" required>
+            <label>Torre</label>
+            <input type="text" id="morTorre" placeholder="Torre" required>
+            <label>Veículo</label>
+            <input type="text" id="morVeiculo" placeholder="Veículo" required>
+            <label>Contato</label>
+            <input type="text" id="morContato" placeholder="Telefone ou Email" required>
+            <button type="submit">Salvar</button>
+        </form>
+    </div>
+</div>
+
+<!-- Modal Veículos -->
+<div id="veiculoModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2 id="modalTitleVeiculo">Adicionar Veículo</h2>
+        <form id="veiculoForm">
+            <label>Tipo</label>
+            <input type="text" id="veiTipo" placeholder="Carro ou Moto" required>
+            <label>Marca</label>
+            <input type="text" id="veiMarca" placeholder="Marca" required>
+            <label>Modelo</label>
+            <input type="text" id="veiModelo" placeholder="Modelo" required>
+            <label>Placa</label>
+            <input type="text" id="veiPlaca" placeholder="Placa" required>
+            <label>Apartamento</label>
+            <input type="text" id="veiApto" placeholder="Apartamento" required>
+            <button type="submit">Salvar</button>
+        </form>
+    </div>
+</div>
+
+<!-- Modal Funcionários -->
+<div id="funcionarioModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2 id="modalTitleFunc">Adicionar Funcionário</h2>
+        <form id="funcionarioForm">
+            <label>Nome</label>
+            <input type="text" id="funcNome" placeholder="Nome do funcionário" required>
+            <label>Função</label>
+            <input type="text" id="funcFuncao" placeholder="Função" required>
+            <label>Dias de trabalho</label>
+            <input type="text" id="funcDias" placeholder="Seg a Sex, Todos os dias..." required>
+            <label>Horário</label>
+            <input type="text" id="funcHorario" placeholder="08:00 - 17:00" required>
+            <button type="submit">Salvar</button>
+        </form>
+    </div>
+</div>
+
+<!-- Modal Registrar Entrega -->
+<div id="entregaModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2 id="modalTitleEntrega">Registrar Entrega</h2>
+        <form id="entregaForm">
+            <label>Nome</label>
+            <input type="text" id="entregaNome" placeholder="Nome do Morador" required>
+            <label>Apartamento</label>
+            <input type="text" id="entregaApto" placeholder="Apartamento" required>
+            <label>Encomenda</label>
+            <select id="entregaTipo" required>
+                <option value="Carta">Carta</option>
+                <option value="Pacote">Pacote</option>
+                <option value="Entrega">Entrega</option>
+            </select>
+            <label>Data/Hora</label>
+            <input type="text" id="entregaData" readonly>
+            <button type="submit">Salvar</button>
+            <button type="button" id="btnEnviarAviso">Enviar Aviso</button>
+        </form>
+    </div>
+</div>
+<!-- Modal Enviar Mensagem -->
+<div id="mensagemModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Enviar Mensagem</h2>
+<form id="mensagemForm">
+    <div class="tabela-container animate">
+        <table class="tabela-moradores">
+            <thead><tr><th>Selecionar</th><th>Nome</th><th>Apartamento</th><th>Torre</th><th>Contato</th></tr></thead>
+            <tbody>
+                ${moradores.map((m,i) => `
+                    <tr>
+                        <td><input type="checkbox" class="chkMorador" data-index="${i}"></td>
+                        <td>${m.nome}</td>
+                        <td>${m.apt}</td>
+                        <td>${m.torre}</td>
+                        <td>${m.contato}</td>
+                    </tr>
+                `).join('')}
+            </tbody>
+        </table>
+    </div>
+    <button type="submit" id="btnEnviarMsg" class="action-btn">Enviar</button>
+</form>
+    </div>
+</div>
+
+
+
+<!-- JS externo -->
+<script src="js/script.js"></script>
+
+</body>
+</html>
+

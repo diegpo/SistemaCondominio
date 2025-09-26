@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sistema Condomínio</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="container">
+    <div class="left">
+        <h1>Bem-Vindo ao Sistema Condomínio</h1>
+        <button class="btn" id="btnAcessar">Acessar</button>
+
+        <form class="login-form" id="loginForm">
+            <!-- Adicionados atributos autocomplete -->
+            <input type="text" placeholder="Usuário" id="usuario" autocomplete="username">
+            <input type="password" placeholder="Senha" id="senha" autocomplete="current-password">
+            <div class="actions">
+                <button type="button" class="btn-action" id="entrar">Entrar</button>
+                <button type="button" class="btn-action" id="voltar">Voltar</button>
+            </div>
+            <button type="button" class="btn-action" id="esqueceu">Esqueceu a senha?</button>
+        </form>
+    </div>
+    <div class="right"></div>
+</div>
+
+<script src="js/login.js"></script>
+</body>
+</html>
