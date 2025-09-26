@@ -57,6 +57,9 @@ document.addEventListener('DOMContentLoaded', () => {
     let entregas = { Mykonos: [], Santorini: [], Creta: [], Paros: [] };
 
     // -------------------- Modais --------------------
+
+
+    
     const modais = {
         morador: document.getElementById('moradorModal'),
         veiculo: document.getElementById('veiculoModal'),
@@ -142,9 +145,256 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // -------------------- Eventos dos links --------------------
-    document.getElementById('link-moradores')?.addEventListener('click', e=>{ e.preventDefault(); renderTabela(moradores,['Nome','Apt','Torre','Veiculo','Contato'],'Moradores','Morador',['searchNome','searchTorre','searchVeiculo']); });
-    document.getElementById('link-veiculos')?.addEventListener('click', e=>{ e.preventDefault(); renderTabela(veiculos,['Tipo','Marca','Modelo','Placa','Apt'],'Veículos','Veiculo',['searchTipo','searchMarca','searchModelo','searchPlaca','searchApto']); });
-    document.getElementById('link-funcionarios')?.addEventListener('click', e=>{ e.preventDefault(); renderTabela(funcionarios,['Nome','Funcao','Dias','Horario'],'Funcionários','Func',['searchNomeFunc','searchFuncao','searchDias','searchHorario']); });
+        // -------------------- Moradores --------------------
+    document.getElementById('link-moradores')?.addEventListener('click', e=>{
+        e.preventDefault(); renderMoradores();
+    });
+
+    function renderMoradores(){
+        const content = document.getElementById('content-area');
+        if(!content) return;
+
+        content.innerHTML = `
+            <h2>Moradores</h2>
+            <div class="moradores-actions" style="display:flex; justify-content:space-between; margin-bottom:10px;">
+                <div>
+                    <button id="btnAddMorador" class="action-btn">Adicionar</button>
+                    <button id="btnEditMorador" class="action-btn">Alterar</button>
+                </div>
+                <div>
+                    <button id="btnBackMorador" class="action-btn" style="background:#95a5a6;">Voltar</button>
+                </div>
+            </div>
+            <div class="moradores-search">
+                <input type="text" id="searchNome" placeholder="Pesquisar por nome">
+                <input type="text" id="searchTorre" placeholder="Pesquisar por torre">
+                <input type="text" id="searchVeiculo" placeholder="Pesquisar por veículo">
+            </div>
+            <div class="tabela-container animate">
+                <table class="tabela-moradores">
+                    <thead>
+                        <tr><th>Nome</th><th>Apartamento</th><th>Torre</th><th>Veículo</th><th>Contato</th></tr>
+                    </thead>
+                    <tbody id="moradoresBody">
+                        ${moradores.map(m=>`<tr>
+                            <td>${m.nome}</td><td>${m.apt}</td><td>${m.torre}</td><td>${m.veiculo}</td><td>${m.contato}</td>
+                        </tr>`).join("")}
+                    </tbody>
+                </table>
+            </div>
+        `;
+
+        const rows = document.querySelectorAll('.tabela-moradores tbody tr');
+        rows.forEach(row=>row.addEventListener('click', ()=>{ rows.forEach(r=>r.classList.remove('selected')); row.classList.add('selected'); }));
+
+        document.getElementById('btnAddMorador')?.addEventListener('click', ()=>openModal('morador','add'));
+        document.getElementById('btnEditMorador')?.addEventListener('click', ()=>{
+            const selected = document.querySelector('.tabela-moradores tr.selected');
+            if(!selected) return alert('Selecione um morador para alterar');
+            openModal('morador','edit',selected);
+        });
+        document.getElementById('btnBackMorador')?.addEventListener('click', loadDashboard);
+
+        ['searchNome','searchTorre','searchVeiculo'].forEach(id=>{
+            document.getElementById(id)?.addEventListener('input', filterMoradores);
+        });
+    }
+    // -------------------- Salvar Morador --------------------
+document.getElementById('moradorForm')?.addEventListener('submit', e=>{
+    e.preventDefault();
+    const data = {
+        nome: document.getElementById('morNome').value,
+        apt: document.getElementById('morApto').value,
+        torre: document.getElementById('morTorre').value,
+        veiculo: document.getElementById('morVeiculo').value,
+        contato: document.getElementById('morContato').value
+    };
+    if(editRow){
+        // modo editar → atualiza linha
+        Array.from(editRow.children).forEach((td,i)=> td.innerText = Object.values(data)[i]);
+        editRow = null;
+    } else {
+        // modo adicionar → insere no array e renderiza de novo
+        moradores.push(data);
+        renderMoradores();
+    }
+    modais['morador'].style.display = 'none';
+});
+
+    function filterMoradores(){
+        const nome = document.getElementById('searchNome')?.value.toLowerCase()||'';
+        const torre = document.getElementById('searchTorre')?.value.toLowerCase()||'';
+        const veiculo = document.getElementById('searchVeiculo')?.value.toLowerCase()||'';
+        document.querySelectorAll('.tabela-moradores tbody tr').forEach(row=>{
+            const c = row.children;
+            row.style.display = (c[0].innerText.toLowerCase().includes(nome) && c[2].innerText.toLowerCase().includes(torre) && c[3].innerText.toLowerCase().includes(veiculo)) ? '' : 'none';
+        });
+    }
+        // -------------------- Veículos --------------------
+    document.getElementById('link-veiculos')?.addEventListener('click', e=>{
+        e.preventDefault(); renderVeiculos();
+    });
+
+    function renderVeiculos(){
+        const content = document.getElementById('content-area');
+        if(!content) return;
+        content.innerHTML = `
+            <h2>Veículos</h2>
+            <div class="moradores-actions" style="display:flex; justify-content:space-between; margin-bottom:10px;">
+                <div>
+                    <button id="btnAddVeiculo" class="action-btn">Adicionar</button>
+                    <button id="btnEditVeiculo" class="action-btn">Alterar</button>
+                </div>
+                <div>
+                    <button id="btnBackVeiculo" class="action-btn" style="background:#95a5a6;">Voltar</button>
+                </div>
+            </div>
+            <div class="moradores-search">
+                <input type="text" id="searchTipo" placeholder="Pesquisar por tipo">
+                <input type="text" id="searchMarca" placeholder="Pesquisar por marca">
+                <input type="text" id="searchModelo" placeholder="Pesquisar por modelo">
+                <input type="text" id="searchPlaca" placeholder="Pesquisar por placa">
+                <input type="text" id="searchApto" placeholder="Pesquisar por apartamento">
+            </div>
+            <div class="tabela-container animate">
+                <table class="tabela-moradores">
+                    <thead>
+                        <tr><th>Tipo</th><th>Marca</th><th>Modelo</th><th>Placa</th><th>Apartamento</th></tr>
+                    </thead>
+                    <tbody id="veiculosBody">
+                        ${veiculos.map(v=>`<tr>
+                            <td>${v.tipo}</td><td>${v.marca}</td><td>${v.modelo}</td><td>${v.placa}</td><td>${v.apt}</td>
+                        </tr>`).join("")}
+                    </tbody>
+                </table>
+            </div>
+        `;
+        const rows = document.querySelectorAll('.tabela-moradores tbody tr');
+        rows.forEach(row=>row.addEventListener('click', ()=>{ rows.forEach(r=>r.classList.remove('selected')); row.classList.add('selected'); }));
+        document.getElementById('btnAddVeiculo')?.addEventListener('click', ()=>openModal('veiculo','add'));
+        document.getElementById('btnEditVeiculo')?.addEventListener('click', ()=>{
+            const selected = document.querySelector('.tabela-moradores tr.selected');
+            if(!selected) return alert('Selecione um veículo para alterar');
+            openModal('veiculo','edit',selected);
+        });
+        document.getElementById('btnBackVeiculo')?.addEventListener('click', loadDashboard);
+        ['searchTipo','searchMarca','searchModelo','searchPlaca','searchApto'].forEach(id=>{
+            document.getElementById(id)?.addEventListener('input', filterVeiculos);
+        });
+    }
+
+    function filterVeiculos(){
+        const tipo = document.getElementById('searchTipo')?.value.toLowerCase()||'';
+        const marca = document.getElementById('searchMarca')?.value.toLowerCase()||'';
+        const modelo = document.getElementById('searchModelo')?.value.toLowerCase()||'';
+        const placa = document.getElementById('searchPlaca')?.value.toLowerCase()||'';
+        const apt = document.getElementById('searchApto')?.value.toLowerCase()||'';
+        document.querySelectorAll('.tabela-moradores tbody tr').forEach(row=>{
+            const c = row.children;
+            row.style.display = (c[0].innerText.toLowerCase().includes(tipo) && c[1].innerText.toLowerCase().includes(marca) && c[2].innerText.toLowerCase().includes(modelo) && c[3].innerText.toLowerCase().includes(placa) && c[4].innerText.toLowerCase().includes(apt)) ? '' : 'none';
+        });
+    }
+    // -------------------- Salvar Veículo --------------------
+document.getElementById('veiculoForm')?.addEventListener('submit', e=>{
+    e.preventDefault();
+    const data = {
+        tipo: document.getElementById('veiTipo').value,
+        marca: document.getElementById('veiMarca').value,
+        modelo: document.getElementById('veiModelo').value,
+        placa: document.getElementById('veiPlaca').value,
+        apt: document.getElementById('veiApto').value
+    };
+    if(editRow){
+        Array.from(editRow.children).forEach((td,i)=> td.innerText = Object.values(data)[i]);
+        editRow = null;
+    } else {
+        veiculos.push(data);
+        renderVeiculos();
+    }
+    modais['veiculo'].style.display = 'none';
+});
+
+
+    // -------------------- Funcionários --------------------
+    document.getElementById('link-funcionarios')?.addEventListener('click', e=>{
+        e.preventDefault(); renderFuncionarios();
+    });
+
+    function renderFuncionarios(){
+        const content = document.getElementById('content-area');
+        if(!content) return;
+        content.innerHTML = `
+            <h2>Funcionários</h2>
+            <div class="moradores-actions" style="display:flex; justify-content:space-between; margin-bottom:10px;">
+                <div>
+                    <button id="btnAddFunc" class="action-btn">Adicionar</button>
+                    <button id="btnEditFunc" class="action-btn">Alterar</button>
+                </div>
+                <div>
+                    <button id="btnBackFunc" class="action-btn" style="background:#95a5a6;">Voltar</button>
+                </div>
+            </div>
+            <div class="moradores-search">
+                <input type="text" id="searchNomeFunc" placeholder="Pesquisar por nome">
+                <input type="text" id="searchFuncao" placeholder="Pesquisar por função">
+                <input type="text" id="searchDias" placeholder="Pesquisar por dias">
+                <input type="text" id="searchHorario" placeholder="Pesquisar por horário">
+            </div>
+            <div class="tabela-container animate">
+                <table class="tabela-moradores">
+                    <thead>
+                        <tr><th>Nome</th><th>Função</th><th>Dias</th><th>Horário</th></tr>
+                    </thead>
+                    <tbody id="funcionariosBody">
+                        ${funcionarios.map(f=>`<tr>
+                            <td>${f.nome}</td><td>${f.funcao}</td><td>${f.dias}</td><td>${f.horario}</td>
+                        </tr>`).join("")}
+                    </tbody>
+                </table>
+            </div>
+        `;
+        const rows = document.querySelectorAll('.tabela-moradores tbody tr');
+        rows.forEach(row=>row.addEventListener('click', ()=>{ rows.forEach(r=>r.classList.remove('selected')); row.classList.add('selected'); }));
+        document.getElementById('btnAddFunc')?.addEventListener('click', ()=>openModal('funcionario','add'));
+        document.getElementById('btnEditFunc')?.addEventListener('click', ()=>{
+            const selected = document.querySelector('.tabela-moradores tr.selected');
+            if(!selected) return alert('Selecione um funcionário para alterar');
+            openModal('funcionario','edit',selected);
+        });
+        document.getElementById('btnBackFunc')?.addEventListener('click', loadDashboard);
+        ['searchNomeFunc','searchFuncao','searchDias','searchHorario'].forEach(id=>{
+            document.getElementById(id)?.addEventListener('input', filterFuncionarios);
+        });
+    }
+
+    function filterFuncionarios(){
+        const nome = document.getElementById('searchNomeFunc')?.value.toLowerCase()||'';
+        const funcao = document.getElementById('searchFuncao')?.value.toLowerCase()||'';
+        const dias = document.getElementById('searchDias')?.value.toLowerCase()||'';
+        const horario = document.getElementById('searchHorario')?.value.toLowerCase()||'';
+        document.querySelectorAll('.tabela-moradores tbody tr').forEach(row=>{
+            const c = row.children;
+            row.style.display = (c[0].innerText.toLowerCase().includes(nome) && c[1].innerText.toLowerCase().includes(funcao) && c[2].innerText.toLowerCase().includes(dias) && c[3].innerText.toLowerCase().includes(horario)) ? '' : 'none';
+        });
+    }
+    // -------------------- Salvar Funcionário --------------------
+document.getElementById('funcionarioForm')?.addEventListener('submit', e=>{
+    e.preventDefault();
+    const data = {
+        nome: document.getElementById('funcNome').value,
+        funcao: document.getElementById('funcFuncao').value,
+        dias: document.getElementById('funcDias').value,
+        horario: document.getElementById('funcHorario').value
+    };
+    if(editRow){
+        Array.from(editRow.children).forEach((td,i)=> td.innerText = Object.values(data)[i]);
+        editRow = null;
+    } else {
+        funcionarios.push(data);
+        renderFuncionarios();
+    }
+    modais['funcionario'].style.display = 'none';
+});
 
     // -------------------- Entregas --------------------
     document.getElementById('link-registrar-entrega')?.addEventListener('click', e=>{
@@ -263,3 +513,4 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
 });
+
