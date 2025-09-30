@@ -27,3 +27,4 @@ document.addEventListener('DOMContentLoaded', () => {
         esqueceu.addEventListener('click', () => { alert('Recuperação de senha não implementada.'); });
     }
 });
+
